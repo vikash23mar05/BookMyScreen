@@ -99,19 +99,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logoutRequest = () => {
+        setAuth(false);
+        setUser(null);
         logOutMutation.mutate(null, {
-            onSuccess: (data) => {
-            console.log(data);
-            setAuth(false);
-            setUser(null);
-            window.location.href = "/" 
-        },
+            onSuccess: () => {
+                window.location.href = "/";
+            },
             onError: (error) => {
-            console.log(error);
-            toast.error(error?.response?.error?.message || "Something went wrong");
-        },
-        })
-    }
+                console.error("Auth logout mutation error:", error);
+                window.location.href = "/";
+            },
+        });
+    };
 
     return (
         <AuthContext.Provider value={{ step, setStep, showModal, toggleModal, sendOtpRequest, authData, user, setUser ,verifyOtpRequest, activateUserRequest, logoutRequest, auth, setAuth, otpLoader:sendOtpRequestMutation.isPending, verifyOtpLoader: verifyOtpRequestMutation.isPending, activateUserLoader: activateUserMutation.isPending }}>

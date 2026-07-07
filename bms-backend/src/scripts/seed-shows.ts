@@ -1,4 +1,3 @@
-// seed/showSeeder.ts
 import mongoose from "mongoose";
 import dayjs from "dayjs";
 import { MovieModel } from "../modules/movie/movie.model";
@@ -6,6 +5,9 @@ import { TheaterModel } from "../modules/theater/theater.model";
 import { ShowModel } from "../modules/show/show.model";
 import { config } from "../config/config";
 import { generateSeatLayout } from "../utils/index"
+import dns from "dns";
+
+dns.setDefaultResultOrder('ipv4first');
 
 
 const generatePriceMap = () =>
@@ -83,7 +85,11 @@ export const seedShow = async () => {
 };
 
 mongoose
-  .connect(config.databaseReplicaSet as string)
+  .connect(config.databaseReplicaSet as string, {
+    family: 4,
+    tlsAllowInvalidCertificates: true,
+    serverSelectionTimeoutMS: 10000,
+  })
   .then(async () => {
     console.log("DB connected");
     await ShowModel.deleteMany({});

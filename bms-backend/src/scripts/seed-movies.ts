@@ -3,6 +3,9 @@
 import mongoose from "mongoose";
 import { MovieModel } from "../modules/movie/movie.model";
 import { config } from "../config/config";
+import dns from "dns";
+
+dns.setDefaultResultOrder('ipv4first');
 
 const movies = [
   {
@@ -148,11 +151,60 @@ const movies = [
     description:
       "M3GAN returns with upgraded AI and deadlier instincts in this spine-chilling tech horror sequel.",
   },
+  {
+    title: "Avatar: Fire and Ash",
+    genre: ["Sci-Fi", "Action", "Adventure"],
+    rating: 9.1,
+    votes: 120500,
+    languages: ["English", "Hindi", "Tamil", "Telugu"],
+    certification: "UA",
+    duration: "3h 10m",
+    posterUrl:
+      "https://res.cloudinary.com/amritrajmaurya/image/upload/v1751790815/kw1gearclw4vjmnkxw0o.avif",
+    releaseDate: new Date("2025-12-19"),
+    description:
+      "Return to Pandora as Jake Sully and Neytiri face a new threat from the ash people.",
+    format: ["2D", "3D", "IMAX 3D"]
+  },
+  {
+    title: "Superman",
+    genre: ["Action", "Sci-Fi", "Adventure"],
+    rating: 8.9,
+    votes: 88400,
+    languages: ["English", "Hindi", "Tamil", "Telugu"],
+    certification: "UA",
+    duration: "2h 45m",
+    posterUrl:
+      "https://res.cloudinary.com/amritrajmaurya/image/upload/v1751790462/yomilxtf8umhsqekxzvv.avif",
+    releaseDate: new Date("2025-07-11"),
+    description:
+      "A young reporter from Smallville navigates his dual identity as the Man of Steel.",
+    format: ["2D", "3D", "IMAX 3D"]
+  },
+  {
+    title: "Zootopia 2",
+    genre: ["Animation", "Comedy", "Family", "Adventure"],
+    rating: 8.7,
+    votes: 45000,
+    languages: ["English", "Hindi"],
+    certification: "U",
+    duration: "1h 50m",
+    posterUrl:
+      "https://res.cloudinary.com/amritrajmaurya/image/upload/v1751826680/lkpu6rs2rxu4jckxtony.avif",
+    releaseDate: new Date("2025-11-26"),
+    description:
+      "Judy Hopps and Nick Wilde return to crack a new case involving a mysterious reptile.",
+    format: ["2D", "3D"]
+  },
 ];
 
 const seedMovies = async () => {
   try {
-    await mongoose.connect(config.databaseReplicaSet as string);
+    await mongoose.connect(config.databaseReplicaSet as string, {
+      family: 4,
+      tlsAllowInvalidCertificates: true,
+      serverSelectionTimeoutMS: 10000,
+    });
     console.log("Connected to DB");
 
     await MovieModel.deleteMany();

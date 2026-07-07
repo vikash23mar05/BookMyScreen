@@ -1,6 +1,5 @@
 import React from "react";
-import mainLogo from "../../assets/main-icon.png";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { FaUser } from "react-icons/fa";
@@ -11,98 +10,95 @@ dayjs.extend(customParseFormat);
 const Header = ({ showData, type }) => {
   const navigate = useNavigate();
   const { auth, user, toggleModal } = useAuth();
-  console.log(showData)
+  
   return (
-    <>
-      <div className="border-b border-gray-200 shadow-sm bg-white">
-        {/* Top Bar */}
-        <div className="flex items-center justify-between py-4 px-6">
-          {/* Logo */}
-          <img
-            onClick={() => navigate("/")}
-            src={mainLogo}
-            alt="bookMyScreen"
-            className="h-6 md:h-8 object-contain cursor-pointer"
-          />
-
-          {type === "checkout" ? (
-            <div>
-              <h2 className="font-bold text-gray-900 text-lg md:text-xl">
-                Review your booking
-              </h2>
-            </div>
-          ) : (
-            <div className="text-center">
-              <h2 className="font-bold text-lg md:text-xl">
-                {showData?.movie.title}
-              </h2>
-              <p className="text-xs text-gray-500 font-semibold">
-                {dayjs(showData?.date, "DD-MM-YYYY").format("D MMMM YYYY")} &nbsp;
-                {showData?.startTime} at{" "}
-                {showData?.theater.name +
-                  ", " +
-                  showData?.theater.city +
-                  ", " +
-                  showData?.theater.state}
-              </p>
-            </div>
-          )}
-
-          {auth ? (
-            <>
-              <div className="flex items-center gap-6">
-                <span className="cursor-pointer text-sm font-medium border rounded-full border-gray-300 p-2">
-                  <FaUser className="text-gray-500" />
-                </span>
-                <span
-                  onClick={() => navigate(`/profile/${user?._id}/profile`)}
-                  className="text-sm -ml-3 font-normal cursor-pointer hover:text-red-500"
-                >
-                  Hi, {user ? user?.name : "Test User"} &nbsp; ▼
-                </span>
-              </div>
-            </>
-          ) : (
-            <button
-              onClick={() => toggleModal()}
-              className="bg-[#f84464] cursor-pointer
-                                    text-white px-4 py-1.5 rounded text-sm"
-            >
-              Sign in
-            </button>
-          )}
+    <div className="w-full bg-background border-b border-outline-variant/30 z-20">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between py-4 px-6 max-w-7xl mx-auto">
+        {/* Brand Logo */}
+        <div 
+          onClick={() => navigate("/")} 
+          className="text-xl md:text-2xl font-black text-white tracking-tighter cursor-pointer select-none hover:text-primary-container transition-colors"
+        >
+          Book<span className="text-primary-container">My</span>Screen
         </div>
+
+        {type === "checkout" ? (
+          <div>
+            <h2 className="font-extrabold text-white text-base md:text-lg tracking-tight">
+              Review your booking
+            </h2>
+          </div>
+        ) : (
+          <div className="text-center">
+            <h2 className="font-black text-white text-base md:text-lg tracking-tight">
+              {showData?.movie.title}
+            </h2>
+            <p className="text-[10px] md:text-xs text-on-surface-variant/80 font-bold mt-0.5">
+              {dayjs(showData?.date, "DD-MM-YYYY").format("D MMMM YYYY")} &nbsp;•&nbsp; {showData?.startTime} at{" "}
+              {showData?.theater.name +
+                ", " +
+                showData?.theater.city +
+                ", " +
+                showData?.theater.state}
+            </p>
+          </div>
+        )}
+
+        {auth ? (
+          <div className="flex items-center gap-3">
+            <div 
+              onClick={() => navigate(`/profile/${user?._id}/profile`)}
+              className="w-8 h-8 rounded-full bg-surface-variant/80 border border-outline-variant flex items-center justify-center cursor-pointer hover:border-primary-container transition-all overflow-hidden"
+            >
+              {user?.avatar ? (
+                <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
+              ) : (
+                <FaUser className="text-on-surface-variant text-xs" />
+              )}
+            </div>
+            <span
+              onClick={() => navigate(`/profile/${user?._id}/profile`)}
+              className="hidden sm:inline text-xs font-semibold cursor-pointer text-on-surface-variant hover:text-white transition-colors"
+            >
+              Hi, {user?.name ? user.name.split(' ')[0] : (user?.email ? user.email.split('@')[0] : "Guest")}
+            </span>
+          </div>
+        ) : (
+          <button
+            onClick={() => toggleModal()}
+            className="bg-primary-container text-on-primary-container px-5 py-1.5 rounded-full font-bold text-xs primary-glow transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            Sign in
+          </button>
+        )}
       </div>
+
       {/* Show Timings */}
       {type !== "checkout" && (
-        <>
-          <div className="bg-white pt-4">
-            <div className="mx-auto px-6 pb-4 flex items-center gap-4 max-w-7xl">
-              <div className="text-sm text-gray-700">
-                <p className="text-xs text-gray-500 font-medium">
-                  {dayjs(showData?.date, "DD-MM-YYYY").format("ddd")}
-                </p>
-                <p className="text-sm font-semibold text-gray-700">
-                  {dayjs(showData?.date, "DD-MM-YYYY").format("DD MMMM")}
-                </p>
-              </div>
-
-              <button
-                className={`border cursor-pointer rounded-[14px] px-8 py-3 text-sm border-black font-medium bg-gray-200
-            `}
-              >
-                {showData?.startTime}
-                <p className="text-[10px] text-gray-500 -mt-1">
-                  {showData?.audioType.toUpperCase()}
-                </p>
-              </button>
+        <div className="bg-surface-container-low/40 py-3 border-t border-outline-variant/20">
+          <div className="mx-auto px-6 flex items-center gap-4 max-w-7xl">
+            <div className="text-xs">
+              <p className="text-[10px] text-on-surface-variant/60 font-medium uppercase tracking-wider">
+                {dayjs(showData?.date, "DD-MM-YYYY").format("ddd")}
+              </p>
+              <p className="font-extrabold text-white">
+                {dayjs(showData?.date, "DD-MM-YYYY").format("DD MMMM")}
+              </p>
             </div>
+
+            <button className="bg-surface-container-high border border-outline-variant/30 rounded-xl px-6 py-1.5 text-xs font-bold text-white shadow-sm flex flex-col items-center">
+              {showData?.startTime}
+              <span className="text-[8px] text-on-surface-variant font-bold tracking-widest mt-0.5 uppercase">
+                {showData?.audioType.toUpperCase()}
+              </span>
+            </button>
           </div>
-          <hr className="my-2 border-gray-300 max-w-7xl mx-auto" />
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 
 export default Header;
+

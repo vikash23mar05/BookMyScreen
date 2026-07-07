@@ -11,6 +11,7 @@ import { Toaster } from "react-hot-toast";
 import { useLoadUser } from "./hooks/useLoadUser";
 import FullScreenLoader from "./components/shared/FullScreenLoader";
 import { useAuth } from "./context/AuthContext";
+import SignInModel from "./components/shared/SignInModel";
 
 
 const PrivateRoute = () => {
@@ -44,7 +45,8 @@ function  App() {
           }
         }}
       />
-      <div className="flex flex-col min-h-screen">
+      <SignInModel />
+      <div className="flex flex-col min-h-screen bg-background text-on-surface">
         {!isSeatLayoutPage && !isCheckoutPage && <Header />}
         <main className="flex-grow">
           <Routes>

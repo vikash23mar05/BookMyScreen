@@ -24,23 +24,27 @@ const SignInModel = () => {
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-xs">
-      <div className="w-[90%] h-[620px] max-w-xl bg-white rounded-3xl shadow-lg animate-fadeIn overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
+      <div className="w-[95%] sm:w-[90%] max-w-md bg-[#0f1115] border border-outline-variant/40 rounded-[28px] shadow-2xl animate-fadeIn overflow-hidden relative flex flex-col">
         {/* Top Header Section */}
-        <div
-          className="bg-gradient-to-r from-gray-800 to-[#f74565] text-white px-6
-            py-8 h-[300px] relative items-center flex flex-col justify-center "
-        >
-          <IoClose onClick={() => toggleModal()} className="absolute top-4 right-4 text-4xl cursor-pointer" />
+        <div className="bg-gradient-to-b from-[#e61e50]/20 to-transparent text-white px-6 py-8 relative flex flex-col items-center justify-center border-b border-outline-variant/10 font-bold">
+          <button
+            onClick={() => toggleModal()}
+            className="absolute top-4 right-4 text-on-surface-variant/80 hover:text-white transition-colors cursor-pointer"
+          >
+            <IoClose className="text-2xl" />
+          </button>
           <img
             src={mainWhiteLogo}
             alt="bookMyScreen"
-            className="mx-auto h-24 mb-2"
+            className="h-16 object-contain mb-3 drop-shadow-[0_0_15px_rgba(230,30,80,0.3)]"
           />
-          <p className="text-md text-white -mt-2">Where movies meet magic.</p>
+          <h2 className="text-xl font-black tracking-tight text-white">Book<span className="text-primary-container">My</span>Screen</h2>
+          <p className="text-xs text-on-surface-variant/70 mt-1">Where movies meet magic.</p>
         </div>
 
-        <div>
+        {/* Dynamic Auth Steps */}
+        <div className="p-6 md:p-8">
           <Step onNext={onNext} />
         </div>
       </div>

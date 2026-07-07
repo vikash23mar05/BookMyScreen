@@ -10,6 +10,7 @@ export interface IMovie {
     languages: string[];
     certification: string;
     posterUrl: string;
+    backdropUrl?: string;
     rating: number;
     votes: number;
     format?: string[];

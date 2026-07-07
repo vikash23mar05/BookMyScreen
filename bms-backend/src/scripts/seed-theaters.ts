@@ -2,11 +2,17 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { TheaterModel } from "../modules/theater/theater.model";
 import { config } from "../config/config";
+import dns from "dns";
 
+dns.setDefaultResultOrder('ipv4first');
 dotenv.config();
 
 mongoose
-  .connect(config.databaseReplicaSet as string)
+  .connect(config.databaseReplicaSet as string, {
+    family: 4,
+    tlsAllowInvalidCertificates: true,
+    serverSelectionTimeoutMS: 10000,
+  })
   .then(async () => {
     console.log("Connected to MongoDB ✅");
 

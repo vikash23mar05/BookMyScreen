@@ -10,6 +10,7 @@ const movieSchema = new mongoose.Schema<IMovie>({
   languages: { type: [String], required: true },
   certification: { type: String, required: true },
   posterUrl: { type: String, required: true },
+  backdropUrl: { type: String },
   rating: { type: Number, required: true },
   votes: { type: Number, required: true },
   format: { type: [String], default: ["2D"] },

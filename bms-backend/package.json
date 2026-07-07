@@ -9,7 +9,8 @@
     "start": "node dist/server.ts",
     "seed:theaters": "ts-node src/scripts/seed-theaters.ts",
     "seed:movies": "ts-node src/scripts/seed-movies.ts",
-    "seed:shows": "ts-node src/scripts/seed-shows.ts"
+    "seed:shows": "ts-node src/scripts/seed-shows.ts",
+    "seed:tmdb": "ts-node src/scripts/sync-tmdb.ts"
   },
   "author": "ProgrammingWithAmrit",
   "license": "ISC",

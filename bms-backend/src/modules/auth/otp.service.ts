@@ -49,7 +49,14 @@ const mailGenerator = new Mailgen({
 
 
 export const sendOTPtoEmail = async (email: string, otp: number) => {
-    const emailTemp:any = {
+        if (!config.emailUsername || !config.emailPassword || config.emailUsername.startsWith("placeholder") || config.emailPassword.startsWith("placeholder")) {
+            console.log(`\n========================================`);
+            console.log(`[Email Mock] 🔑 OTP for ${email} is: ${otp}`);
+            console.log(`========================================\n`);
+            return "mock-message-id";
+        }
+
+        const emailTemp:any = {
             body: {
                 name: '',
                 intro: 'Welcome to bookMyScreen! We\'re very excited to have you on board.',

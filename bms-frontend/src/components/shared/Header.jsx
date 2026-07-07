@@ -1,96 +1,151 @@
-import mainLogo from "../../assets/main-icon.png";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaSearch, FaUser } from "react-icons/fa";
 import { useLocation } from "../../context/LocationContext";
-import map from "../../assets/pin.gif";
-import { useNavigate, useParams } from "react-router-dom";
-import SignInModel from "./SignInModel";
 import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
-
-  const { location, loading, error } = useLocation();
-   const { toggleModal, auth, user } = useAuth();
+  const { location, setLocation, loading } = useLocation();
+  const { toggleModal, auth, user } = useAuth();
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
   const navigate = useNavigate();
+
   return (
-    <div className="w-full text-sm bg-white">
-      {/* Top Navbar */}
-      <div className="px-4 md:px-8">
-        <div
-          className="max-w-screen-xl mx-auto flex justify-between items-center
-            py-3"
-        >
-          {/* Left Part */}
-          <div className="flex items-center space-x-4">
-            <img
-              onClick={() => navigate("/")}
-              src={mainLogo}
-              alt="logo"
-              className="h-8 object-contain cursor-pointer"
+    <>
+      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 md:px-12 py-4 bg-gradient-to-b from-background/95 via-background/80 to-transparent backdrop-blur-md border-b border-outline-variant/30">
+        {/* Left Side: Brand Logo & Navigation Links */}
+        <div className="flex items-center gap-10">
+          <div 
+            onClick={() => navigate("/")} 
+            className="text-2xl font-black text-white tracking-tighter cursor-pointer select-none hover:text-primary-container transition-colors"
+          >
+            Book<span className="text-primary-container">My</span>Screen
+          </div>
+
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/movies" className="text-on-surface-variant font-semibold hover:text-white transition-colors">Movies</Link>
+            <span className="text-on-surface-variant font-semibold hover:text-white cursor-pointer transition-colors">Offers</span>
+          </div>
+        </div>
+
+        {/* Search and Action Buttons */}
+        <div className="flex items-center gap-6">
+          {/* Search Input */}
+          <div className="hidden lg:flex items-center bg-surface-container-high/40 rounded-full px-4 py-2 border border-outline-variant/50 focus-within:border-primary-container transition-all">
+            <FaSearch className="text-on-surface-variant mr-2" />
+            <input 
+              type="text" 
+              placeholder="Search Movies..." 
+              className="bg-transparent border-none outline-none focus:ring-0 text-sm w-44 text-on-surface placeholder:text-on-surface-variant/70"
             />
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search for Movies, Events, Plays, Sports and Activities"
-                className="border border-gray-300 rounded px-4 py-1.5 w-[400px] text-sm outline-none"
-              />
-              <FaSearch className="absolute right-2 top-2.5 text-gray-500" />
-            </div>
           </div>
-          {/* Right Part */}
-          <div className="flex item-center space-x-6">
-            <div className="text-sm font-medium cursor-pointer mt-2">
-              {loading && <img src={map} alt="loading..." className="w-10 h-10" />}
-              {location && <p>{location} &nbsp; ▼</p>}
+
+          {/* Location Selector */}
+          <div 
+            onClick={() => setIsLocationOpen(true)}
+            className="flex items-center gap-2 text-sm font-semibold text-on-surface-variant cursor-pointer hover:text-white transition-colors bg-surface-container-low/40 border border-outline-variant/30 rounded-full px-4 py-1.5 hover:border-primary-container/50 hover:bg-surface-container-high/30"
+          >
+            {loading ? (
+              <span className="text-xs">Locating...</span>
+            ) : (
+              <span className="flex items-center gap-1 font-bold">
+                📍 {location || "Select City"}
+              </span>
+            )}
+          </div>
+
+          {/* User / Authentication */}
+          {auth ? (
+            <div className="flex items-center gap-3">
+              <div 
+                onClick={() => navigate(`/profile/${user?._id}/profile`)}
+                className="w-9 h-9 rounded-full bg-surface-variant/80 border border-outline-variant flex items-center justify-center cursor-pointer hover:border-primary-container transition-all overflow-hidden"
+              >
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <FaUser className="text-on-surface-variant text-sm" />
+                )}
+              </div>
+              <span 
+                onClick={() => navigate(`/profile/${user?._id}/profile`)}
+                className="hidden sm:inline text-sm font-medium cursor-pointer text-on-surface-variant hover:text-white transition-colors"
+              >
+                Hi, {user?.name ? user.name.split(' ')[0] : (user?.email ? user.email.split('@')[0] : "Guest")}
+              </span>
             </div>
-            {
-              auth ? (
-                  <>
-                    <span className="cursor-pointer text-sm font-medium border rounded-full border-gray-300 p-2">
-                      <FaUser className="text-gray-500" />
-                    </span>
-                    <span onClick={() => navigate(`/profile/${user?._id}/profile`)} className="text-sm -ml-3 font-normal cursor-pointer hover:text-red-500">
-                      Hi, {user ? user?.name : "Test User"} &nbsp; ▼
-                    </span>
-                  </>
-              ) : (
-                <button
+          ) : (
+            <button 
               onClick={() => toggleModal()}
-              className="bg-[#f84464] cursor-pointer
-                    text-white px-4 py-1.5 rounded text-sm"
+              className="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold primary-glow transition-transform hover:scale-105 active:scale-95 cursor-pointer"
             >
-              Sign in
+              Sign In
             </button>
-              )
-            }
-          </div>
+          )}
         </div>
-      </div>
-      {/* Bottom Navbar */}
-      <div className="bg-[#f2f2f2] px-4 md:px-8">
-        <div className="max-w-screen-xl mx-auto flex justify-between items-center py-2 text-gray-700">
-          <div className="flex items-center space-x-6 font-medium">
-            <span onClick={() => navigate("/movies")} className="cursor-pointer hover:text-red-500">Movies</span>
-            <span className="cursor-pointer hover:text-red-500">Stream</span>
-            <span className="cursor-pointer hover:text-red-500">Events</span>
-            <span className="cursor-pointer hover:text-red-500">Plays</span>
-            <span className="cursor-pointer hover:text-red-500">Sports</span>
-            <span className="cursor-pointer hover:text-red-500">
-              Activities
-            </span>
-          </div>
+      </nav>
 
-            <div className="flex item-center space-x-6 text-sm">
-                <span className="cursor-pointer hover:underline">ListYourShow</span>
-                <span className="cursor-pointer hover:underline">Corporates</span>
-                <span className="cursor-pointer hover:underline">Offers</span>
-                <span className="cursor-pointer hover:underline">Gift Cards</span>
+      {/* Location Selector Modal */}
+      {isLocationOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md">
+          <div className="w-[95%] sm:w-[90%] max-w-xl bg-[#0f1115] border border-outline-variant/40 rounded-[28px] shadow-2xl p-6 md:p-8 relative flex flex-col gap-6 animate-fadeIn">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center border-b border-outline-variant/15 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-white uppercase tracking-wider">Select Location</h3>
+                <p className="text-xs text-on-surface-variant/70 mt-0.5">Choose your state/region to find nearby theaters</p>
+              </div>
+              <button 
+                onClick={() => setIsLocationOpen(false)}
+                className="text-on-surface-variant/80 hover:text-white transition-colors cursor-pointer text-2xl font-bold"
+              >
+                &times;
+              </button>
             </div>
 
+            {/* Grid of Locations */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-y-auto max-h-[320px] pr-1">
+              {[
+                { name: "Maharashtra", label: "Mumbai / Pune", icon: "🏛️" },
+                { name: "West Bengal", label: "Kolkata", icon: "🌉" },
+                { name: "Delhi", label: "Delhi NCR", icon: "🕌" },
+                { name: "Karnataka", label: "Bangalore", icon: "💻" },
+                { name: "Telangana", label: "Hyderabad", icon: "🕌" },
+                { name: "Tamil Nadu", label: "Chennai", icon: "🛕" },
+                { name: "Gujarat", label: "Ahmedabad", icon: "🦁" },
+                { name: "Rajasthan", label: "Jaipur", icon: "👑" },
+                { name: "Uttar Pradesh", label: "Lucknow", icon: "🏯" },
+                { name: "Madhya Pradesh", label: "Indore / Bhopal", icon: "🏛️" },
+                { name: "Bihar", label: "Patna", icon: "🛕" },
+                { name: "Jharkhand", label: "Ranchi", icon: "🌲" }
+              ].map((loc) => {
+                const isActive = location === loc.name;
+                return (
+                  <button
+                    key={loc.name}
+                    onClick={() => {
+                      setLocation(loc.name);
+                      setIsLocationOpen(false);
+                    }}
+                    className={`flex flex-col items-center justify-center p-4 rounded-2xl border text-center transition-all cursor-pointer group ${
+                      isActive
+                        ? "bg-primary-container text-on-primary-container border-primary-container shadow-lg shadow-primary-container/20 font-black scale-105"
+                        : "bg-surface-container-high/30 border-outline-variant/30 text-on-surface-variant hover:border-primary-container/60 hover:text-white hover:bg-surface-container-high/50"
+                    }`}
+                  >
+                    <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">{loc.icon}</span>
+                    <span className="text-xs font-black tracking-tight">{loc.name}</span>
+                    <span className="text-[9px] opacity-60 font-semibold mt-0.5">{loc.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
-      <SignInModel />
-    </div>
+      )}
+    </>
   );
 };
 
 export default Header;
+

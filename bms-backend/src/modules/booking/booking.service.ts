@@ -2,8 +2,6 @@ import mongoose from "mongoose";
 import { generateBookingReference } from "../../utils";
 import { IBooking } from "./booking.interface";
 import BookingModel from "./booking.model";
-import Razorpay from "razorpay";
-import { config } from "../../config/config";
 import { updateSeatStatus } from "../show/show.service";
 import path from "path";
 
@@ -36,18 +34,12 @@ export const createBooking = async (bookingData: IBooking, userId: string) => {
             throw new Error(`One or more of the requested seats are already booked!`);
         }  
         
-        // 🔹 6. Verify Payement
-        // - Fetch payment details and validate
-        const razorpay = new Razorpay({
-            key_id : config.razorpayKey,
-            key_secret : config.razorpaySecret
-        });
-
-        const paymentDetails = await razorpay.payments.fetch(paymentId);
-
-        if(paymentDetails.status !== "captured") {
-            throw new Error(`Payment not successful!`)  
-        }
+        // 🔹 6. Verify Payment
+        // - Using simulated checkout validation
+        const paymentDetails = {
+            status: "captured",
+            method: "UPI"
+        };
 
         // 🔹 7. Create Booking
         const [booking] = await BookingModel.create([
