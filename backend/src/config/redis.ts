@@ -67,17 +67,28 @@ class InMemoryRedis {
 
 let redis: any;
 
-const useInMemory = process.env.USE_IN_MEMORY_REDIS === "true" || !process.env.REDIS_HOST;
+const useInMemory = process.env.USE_IN_MEMORY_REDIS === "true" || (!process.env.REDIS_HOST && !process.env.REDIS_URL);
 
 if (useInMemory) {
     console.log("[Redis] Using in-memory fallback client.");
     redis = new InMemoryRedis();
 } else {
-    redis = new Redis({
-        host: config.redisHost,
-        port: config.redisPort,
-        retryStrategy: () => 5000
-    });
+    const redisUrl = process.env.REDIS_URL;
+    if (redisUrl) {
+        const isTls = redisUrl.startsWith("rediss://") || process.env.REDIS_TLS === "true";
+        console.log(`[Redis] Connecting via URL (TLS: ${isTls})`);
+        redis = new Redis(redisUrl, {
+            tls: isTls ? {} : undefined,
+            retryStrategy: () => 5000
+        });
+    } else {
+        console.log(`[Redis] Connecting via Host ${config.redisHost}:${config.redisPort}`);
+        redis = new Redis({
+            host: config.redisHost,
+            port: config.redisPort,
+            retryStrategy: () => 5000
+        });
+    }
 
     redis.on("error", (err: any) => {
         console.error("[Redis error:]", err);

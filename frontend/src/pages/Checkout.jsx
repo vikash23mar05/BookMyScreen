@@ -43,6 +43,7 @@ const Checkout = () => {
             socket.emit("unlock-seats", {
               showId: showData._id,
               userId: user._id,
+              seatIds: selectedSeats,
             });
           }
           toast.error("Time expired!");
@@ -53,7 +54,19 @@ const Checkout = () => {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [showData, user, navigate]);
+  }, [showData, user, navigate, selectedSeats]);
+
+  useEffect(() => {
+    return () => {
+      if (showData && user && selectedSeats.length > 0) {
+        socket.emit("unlock-seats", {
+          showId: showData._id,
+          userId: user._id,
+          seatIds: selectedSeats,
+        });
+      }
+    };
+  }, [showData, user, selectedSeats]);
 
   const bookTicketMutation = useMutation({
     mutationFn: (reqData) => bookShow(reqData),
