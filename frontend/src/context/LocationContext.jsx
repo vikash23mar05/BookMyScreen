@@ -4,7 +4,7 @@ const LocationContext = createContext();
 
 export const LocationProvide = ({ children }) => {
   const [location, setLocationState] = useState(() => {
-    return localStorage.getItem("user-location") || "West Bengal";
+    return localStorage.getItem("user-location") || "Delhi";
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,7 +33,7 @@ export const LocationProvide = ({ children }) => {
         }
       } catch (error) {
         setError("Failed to fetch location data");
-        setLocation("West Bengal");
+        setLocation("Delhi");
       } finally {
         setLoading(false);
       }
@@ -46,7 +46,7 @@ export const LocationProvide = ({ children }) => {
       },
       () => {
         setError("Unable to retrieve your location");
-        setLocation("West Bengal");
+        setLocation("Delhi");
         setLoading(false);
       }
     );
