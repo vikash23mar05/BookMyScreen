@@ -15,10 +15,15 @@ const startServer = async () => {
   // Create HTTP server from Express app
   const httpServer = http.createServer(app);
 
+  const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+  ].filter(Boolean) as string[];
+
   // Create socket.io server
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: allowedOrigins,
       methods: ["GET", "POST"],
       credentials: true,
     },
