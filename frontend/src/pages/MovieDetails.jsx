@@ -42,7 +42,7 @@ const MovieDetails = () => {
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: `url(${movie.posterUrl})`,
+              backgroundImage: `url(${movie.backdropUrl || movie.posterUrl})`,
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>

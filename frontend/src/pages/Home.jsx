@@ -52,7 +52,7 @@ const Home = () => {
         <section className="relative h-[75vh] w-full overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center transition-all duration-700"
-            style={{ backgroundImage: `url(${heroMovie.posterUrl})` }}
+            style={{ backgroundImage: `url(${heroMovie.backdropUrl || heroMovie.posterUrl})` }}
           >
             <div className="absolute inset-0 hero-gradient"></div>
           </div>

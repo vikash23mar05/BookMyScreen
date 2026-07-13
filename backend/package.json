@@ -12,7 +12,7 @@
     "seed:shows": "ts-node src/scripts/seed-shows.ts",
     "seed:tmdb": "ts-node src/scripts/sync-tmdb.ts"
   },
-  "author": "ProgrammingWithAmrit",
+  "author": "vikash23mar05",
   "license": "ISC",
   "dependencies": {
     "cookie-parser": "^1.4.7",
