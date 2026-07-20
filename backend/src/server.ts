@@ -13,8 +13,6 @@ const startServer = async () => {
   // Connet to database
   await connectDB();
 
-  // Self-heal: keep show data covering a rolling 7-day window so the
-  // frontend date selector (next 7 days) always has matching shows.
   await ensureShowsFresh(7);
 
   // Create HTTP server from Express app

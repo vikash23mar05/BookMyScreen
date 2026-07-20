@@ -5,9 +5,6 @@ import dns from "dns";
 
 dns.setDefaultResultOrder("ipv4first");
 
-// Manual reseed: covers a rolling 7-day window starting today,
-// matching the frontend date selector. Reuses the shared seeder so
-// the standalone script and the server-startup self-heal never drift.
 mongoose
   .connect(config.databaseReplicaSet as string, {
     family: 4,
