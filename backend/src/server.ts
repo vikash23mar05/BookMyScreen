@@ -13,8 +13,6 @@ const startServer = async () => {
   // Connet to database
   await connectDB();
 
-  await ensureShowsFresh(7);
-
   // Create HTTP server from Express app
   const httpServer = http.createServer(app);
 
@@ -44,6 +42,8 @@ const startServer = async () => {
 
   httpServer.listen(port, () => {
     console.log(`Listening on port: ${port}`);
+    // Run in background so it never blocks port binding or crashes startup.
+    ensureShowsFresh(7);
   });
 };
 

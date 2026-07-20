@@ -21,6 +21,8 @@ const fixedTimeSlots = [
   { start: "10:30 PM", end: "01:00 AM" },
 ];
 
+const BATCH_SIZE = 200;
+
 export const reseedShows = async (windowDays = 7) => {
   const movies = await MovieModel.find();
   const theatres = await TheaterModel.find();
@@ -33,7 +35,15 @@ export const reseedShows = async (windowDays = 7) => {
   await ShowModel.deleteMany({});
 
   const today = dayjs().startOf("day");
-  const showsToInsert: any[] = [];
+  let batch: any[] = [];
+  let total = 0;
+
+  const flush = async () => {
+    if (!batch.length) return;
+    await ShowModel.insertMany(batch);
+    total += batch.length;
+    batch = [];
+  };
 
   for (const movie of movies) {
     for (const theatre of theatres) {
@@ -43,7 +53,7 @@ export const reseedShows = async (windowDays = 7) => {
         const selectedSlots = fixedTimeSlots.slice(0, numShows);
 
         for (const slot of selectedSlots) {
-          showsToInsert.push({
+          batch.push({
             movie: movie._id,
             theater: theatre._id,
             location: (theatre as any).state,
@@ -54,17 +64,19 @@ export const reseedShows = async (windowDays = 7) => {
             priceMap: generatePriceMap(),
             seatLayout: generateSeatLayout(),
           });
+
+          if (batch.length >= BATCH_SIZE) await flush();
         }
       }
     }
   }
 
-  await ShowModel.insertMany(showsToInsert);
-  console.log(`✅ Seeded ${showsToInsert.length} shows across ${windowDays} days.`);
+  await flush();
+  console.log(`✅ Seeded ${total} shows across ${windowDays} days.`);
 };
 
-// Reseed on startup only if today has no shows, so the deployed site
-// always has shows matching the frontend's next-7-days selector.
+// Reseed only if today has no shows, so the deployed site always has
+// shows matching the frontend's next-7-days selector.
 export const ensureShowsFresh = async (windowDays = 7) => {
   try {
     const todayFormatted = dayjs().startOf("day").format("DD-MM-YYYY");
