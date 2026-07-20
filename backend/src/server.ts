@@ -5,12 +5,17 @@ import connectDB from "./config/db";
 import "./config/redis";
 import http from "http";
 import { registerSocketHandlers } from "./socket/sockethandlers";
+import { ensureShowsFresh } from "./modules/show/show.seeder";
 
 const startServer = async () => {
   const port = config.port;
 
   // Connet to database
   await connectDB();
+
+  // Self-heal: keep show data covering a rolling 7-day window so the
+  // frontend date selector (next 7 days) always has matching shows.
+  await ensureShowsFresh(7);
 
   // Create HTTP server from Express app
   const httpServer = http.createServer(app);
